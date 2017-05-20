@@ -2,7 +2,7 @@
   "name": "tictactoe",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://kanac.github.io/ttt",
+  "homepage": "https://kanac.github.io/ttt-react",
   "dependencies": {
     "react": "^15.5.4",
     "react-dom": "^15.5.4"
