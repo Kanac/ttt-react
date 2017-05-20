@@ -2,9 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+function SetSquareStyle(win){
+  return win ? "square squareWin" : "square";
+}
+
 function Square(props){
   return (
-    <button className="square" onClick={props.onClick}>
+    <button 
+      className={SetSquareStyle(props.win)} 
+      onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -15,6 +21,7 @@ class Board extends React.Component {
     return (
       <Square
         value={this.props.squares[i]}
+        win={this.props.winSquares[i]}
         onClick={() => this.props.onClick(i)}
       />
     );
@@ -61,7 +68,7 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    if (calculateWinner(squares)[0] != "" || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -103,7 +110,7 @@ class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = 'Winner: ' + winner;
+      status = 'Winner: ' + winner[0];
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -113,6 +120,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board 
             squares={current.squares}
+            winSquares={winner[1]}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
@@ -148,11 +156,20 @@ function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6],
   ];
+
+  let ret = new Array();
+  ret[0] = new Array();
+  ret[1] = new Array(9);
+
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      ret[0][0] = squares[a];
+      ret[1][a] = true;
+      ret[1][b] = true;
+      ret[1][c] = true;
+      return ret;
     }
   }
-  return null;
+  return ret;
 }
